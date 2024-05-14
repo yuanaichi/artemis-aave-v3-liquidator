@@ -4,10 +4,13 @@ use std::str::FromStr;
 
 use artemis_core::engine::Engine;
 use artemis_core::types::{CollectorMap, ExecutorMap};
-use collectors::time_collector::TimeCollector;
+use collectors:: {
+    time_collector::TimeCollector,
+    block_collector::BlockCollector,
+};
 use ethers::{
     prelude::MiddlewareBuilder,
-    providers::{Http, Provider},
+    providers::{Http, Provider, Ws},
     signers::{LocalWallet, Signer},
 };
 use executors::protect_executor::ProtectExecutor;
@@ -23,8 +26,8 @@ pub mod collectors;
 pub mod executors;
 pub mod strategies;
 
-static POLL_INTERVAL_SECS: u64 = 60 * 5;
-pub const CHAIN_ID: u64 = 8453;
+static POLL_INTERVAL_SECS: u64 = 12; //60 * 5;
+pub const CHAIN_ID: u64 = 10; // optimistic
 
 /// CLI Options.
 #[derive(Parser, Debug)]
@@ -67,6 +70,9 @@ async fn main() -> Result<()> {
     let rpc = Http::from_str(&args.rpc)?;
     let provider = Provider::new(rpc);
 
+    let ws = Ws::connect("wss://optimism-mainnet.infura.io/ws/v3/ef08bd48a00b4e8db35b06a627b9dd5b").await?;
+    let ws_provider = Provider::new(ws);
+
     let wallet: LocalWallet = args
         .private_key
         .parse::<LocalWallet>()
@@ -75,14 +81,21 @@ async fn main() -> Result<()> {
     let address = wallet.address();
 
     let provider = Arc::new(provider.nonce_manager(address).with_signer(wallet.clone()));
+    let ws_provider = Arc::new(ws_provider.nonce_manager(address).with_signer(wallet.clone()));
 
     // Set up engine.
     let mut engine: Engine<Event, Action> = Engine::default();
 
+
+    let block_collector = Box::new(BlockCollector::new(ws_provider.clone()));
+    let block_collector = CollectorMap::new(block_collector, Event::NewBlock);
+    engine.add_collector(Box::new(block_collector));
+    
     // Set up time collector.
     let time_collector = Box::new(TimeCollector::new(POLL_INTERVAL_SECS));
     let time_collector = CollectorMap::new(time_collector, Event::NewTick);
     engine.add_collector(Box::new(time_collector));
+
 
     let config = Config {
         bid_percentage: args.bid_percentage,

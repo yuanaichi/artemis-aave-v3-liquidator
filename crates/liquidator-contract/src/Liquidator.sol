@@ -16,8 +16,8 @@ contract Liquidator is Owned(msg.sender), IUniswapV3SwapCallback {
     // ERC20 constant weth = ERC20(0x4200000000000000000000000000000000000006);
     // ERC20 constant usdc = ERC20(0xd9aAEc86B65D86f6A7B5B1b0c42FFA531710b6CA);
     // IUniswapV3PoolActions constant uniswapPool = IUniswapV3PoolActions(0x4C36388bE6F416A29C8d8Eee81C771cE6bE14B18);
-    address private constant uniswapV3Factory = 0x33128a8fC17869897dcE68Ed026d694621f6FDfD;
-    IL2Pool public constant pool = IL2Pool(0x8F44Fd754285aa6A2b8B9B97739B79746e0475a7);
+    address private constant uniswapV3Factory = 0x1F98431c8aD98523631AE4a59f267346ea31F984; //optimism factory
+    IL2Pool public constant pool = IL2Pool(0x794a61358D6845594F94dc1DB02A252b5b4814aD); //optimism L2 pool proxy address
 
     constructor() {}
 

@@ -1,5 +1,6 @@
 use super::types::Config;
 use crate::collectors::time_collector::NewTick;
+use crate::collectors::block_collector::NewBlock;
 use anyhow::{anyhow, Result};
 use artemis_core::executors::mempool_executor::{GasBidInfo, SubmitTxToMempool};
 use artemis_core::types::Strategy;
@@ -46,6 +47,7 @@ pub enum Deployment {
 }
 
 pub const WETH_ADDRESS: &str = "0x4200000000000000000000000000000000000006";
+pub const WETH_UNIT: &str = "1000000000000000000";
 
 pub const LIQUIDATION_CLOSE_FACTOR_THRESHOLD: &str = "950000000000000000";
 pub const MAX_LIQUIDATION_CLOSE_FACTOR: u64 = 10000;
@@ -60,13 +62,13 @@ pub const PRICE_ONE: u64 = 100000000;
 fn get_deployment_config(deployment: Deployment) -> DeploymentConfig {
     match deployment {
         Deployment::AAVE => DeploymentConfig {
-            pool_address: Address::from_str("0xA238Dd80C259a72e81d7e4664a9801593F98d1c5").unwrap(),
-            pool_data_provider: Address::from_str("0x2d8A3C5677189723C4cB8873CfC9C8976FDF38Ac")
+            pool_address: Address::from_str("0x794a61358D6845594F94dc1DB02A252b5b4814aD").unwrap(), //l2pool proxy 
+            pool_data_provider: Address::from_str("0x69FA688f1Dc47d4B5d8029D5a35FB7a548310654")
                 .unwrap(),
-            oracle_address: Address::from_str("0x2Cc0Fc26eD4563A5ce5e8bdcfe1A2878676Ae156")
+            oracle_address: Address::from_str("0xD81eb3728a631871a7eBBaD631b5f424909f0c77")
                 .unwrap(),
-            l2_encoder: Address::from_str("0x39e97c588B2907Fb67F44fea256Ae3BA064207C5").unwrap(),
-            creation_block: 2963358,
+            l2_encoder: Address::from_str("0x9abADECD08572e0eA5aF4d47A9C7984a5AA503dC").unwrap(),
+            creation_block: 119634986,
         },
         Deployment::SEASHELL => DeploymentConfig {
             pool_address: Address::from_str("0x8F44Fd754285aa6A2b8B9B97739B79746e0475a7").unwrap(),
@@ -159,7 +161,7 @@ impl<M: Middleware + 'static> Strategy<Event, Action> for AaveStrategy<M> {
         info!("syncing state");
 
         self.update_token_configs().await?;
-        self.approve_tokens().await?;
+        // self.approve_tokens().await?;
         self.load_cache()?;
         self.update_state().await?;
 
@@ -170,7 +172,7 @@ impl<M: Middleware + 'static> Strategy<Event, Action> for AaveStrategy<M> {
     // Process incoming events, seeing if we can arb new orders, and updating the internal state on new blocks.
     async fn process_event(&mut self, event: Event) -> Option<Action> {
         match event {
-            // Event::NewBlock(block) => self.process_new_block_event(block).await,
+            Event::NewBlock(block) => self.process_new_block_event(block).await,
             Event::NewTick(block) => self.process_new_tick_event(block).await,
         }
     }
@@ -178,11 +180,11 @@ impl<M: Middleware + 'static> Strategy<Event, Action> for AaveStrategy<M> {
 
 impl<M: Middleware + 'static> AaveStrategy<M> {
     /// Process new block events, updating the internal state.
-    // async fn process_new_block_event(&mut self, event: NewBlock) -> Option<Action> {
-    //     info!("received new block: {:?}", event);
-    //     self.last_block_number = event.number.as_u64();
-    //     None
-    // }
+    async fn process_new_block_event(&mut self, event: NewBlock) -> Option<Action> {
+        info!("received new block: {:?}", event);
+        // self.last_block_number = event.number.as_u64();
+        None
+    }
 
     /// Process new block events, updating the internal state.
     async fn process_new_tick_event(&mut self, event: NewTick) -> Option<Action> {
@@ -462,26 +464,15 @@ impl<M: Middleware + 'static> AaveStrategy<M> {
         Ok(())
     }
 
-    // 8 decimals of precision
-    async fn get_asset_price_eth(&self, asset: &Address, pool_state: &PoolState) -> Result<U256> {
-        // 1:1 for weth
+    async fn get_eth_price(&self, pool_state: &PoolState) -> Result<U256> {
         let weth_address = WETH_ADDRESS.parse::<Address>().unwrap();
-        if asset.eq(&weth_address) {
-            return Ok(U256::from(PRICE_ONE));
-        }
 
-        // usd / token
-        let usd_price = pool_state
-            .prices
-            .get(asset)
-            .ok_or(anyhow!("No price found for asset {}", asset.to_string()))?;
-        // usd / eth
         let usd_price_eth = pool_state.prices.get(&weth_address).ok_or(anyhow!(
             "No price found for asset {}",
             weth_address.to_string()
         ))?;
-        // usd / token * eth / usd = eth / token
-        Ok(usd_price * U256::from(PRICE_ONE) / usd_price_eth)
+
+        Ok(usd_price_eth.clone())
     }
 
     async fn get_best_liquidation_op(&mut self) -> Result<Option<LiquidationOpportunity>> {
@@ -590,7 +581,7 @@ impl<M: Middleware + 'static> AaveStrategy<M> {
         let (_, stable_debt, variable_debt, _, _, _, _, _, _) = pool_data
             .get_user_reserve_data(*debt_address, *borrower_address)
             .await?;
-        let close_factor = if health_factor.gt(&U256::from(LIQUIDATION_CLOSE_FACTOR_THRESHOLD)) {
+        let close_factor = if health_factor.gt(&U256::from_dec_str(LIQUIDATION_CLOSE_FACTOR_THRESHOLD).unwrap()) {
             U256::from(DEFAULT_LIQUIDATION_CLOSE_FACTOR)
         } else {
             U256::from(MAX_LIQUIDATION_CLOSE_FACTOR)
@@ -603,11 +594,17 @@ impl<M: Middleware + 'static> AaveStrategy<M> {
         let mut collateral_to_liquidate = percent_mul(base_collateral, liquidation_bonus);
         let user_collateral_balance = a_token.balance_of(*borrower_address).await?;
 
+
         if collateral_to_liquidate > user_collateral_balance {
             collateral_to_liquidate = user_collateral_balance;
             debt_to_cover = (collateral_asset_price * collateral_to_liquidate * debt_unit)
-                / percent_div(debt_asset_price * collateral_unit, liquidation_bonus);
+                / percent_mul(debt_asset_price * collateral_unit, liquidation_bonus);
         }
+
+        info!(
+            "collateral_to_liquidate: {:?}, debt_to_cover: {:?}, user_collateral_balance: {:?}",
+            collateral_to_liquidate, debt_to_cover, user_collateral_balance
+        );
 
         let mut op = LiquidationOpportunity {
             borrower: borrower_address.clone(),
@@ -619,13 +616,18 @@ impl<M: Middleware + 'static> AaveStrategy<M> {
 
         let gain = self.build_liquidation_call(&op).await?.call().await?;
 
-        let weth_price = self
-            .get_asset_price_eth(collateral_address, pool_state)
-            .await?;
-        op.profit_eth = gain * I256::from_dec_str(&weth_price.to_string())? / I256::from(PRICE_ONE);
+        info!("gain: {:?}", gain);
+
+        let usd_price_eth = self.get_eth_price(pool_state).await?;
+
+        op.profit_eth = gain * I256::from_dec_str(
+            &(
+                U256::from_dec_str(WETH_UNIT).unwrap() * collateral_asset_price / (usd_price_eth * collateral_unit)
+            ).to_string()
+        )?;
 
         info!(
-            "Found opportunity - collateral: {:?}, debt: {:?}, collateral_to_liquidate: {:?}, debt_to_cover: {:?}, profit_eth: {:?}",
+            "Found opportunity2 - collateral: {:?}, debt: {:?}, collateral_to_liquidate: {:?}, debt_to_cover: {:?}, profit_eth: {:?}",
             collateral_address, debt_address, collateral_to_liquidate, debt_to_cover, op.profit_eth
         );
 
@@ -643,8 +645,10 @@ impl<M: Middleware + 'static> AaveStrategy<M> {
             .call()
             .await?;
 
+        info!("data0: {:?}, data1: {:?}", data0, data1);
+
         // TODO: handle arbitrary pool fees
-        Ok(liquidator.liquidate(op.collateral, op.debt, 500, op.debt_to_cover, data0, data1))
+        Ok(liquidator.liquidate(op.collateral, op.debt, 100, op.debt_to_cover, data0, data1))
     }
 
     async fn build_liquidation(&self, op: &LiquidationOpportunity) -> Result<TypedTransaction> {

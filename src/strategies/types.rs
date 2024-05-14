@@ -1,10 +1,12 @@
 use crate::collectors::time_collector::NewTick;
+use crate::collectors::block_collector::NewBlock;
 use artemis_core::executors::mempool_executor::SubmitTxToMempool;
 
 /// Core Event enum for the current strategy.
 #[derive(Debug, Clone)]
 pub enum Event {
     NewTick(NewTick),
+    NewBlock(NewBlock)
 }
 
 /// Core Action enum for the current strategy.

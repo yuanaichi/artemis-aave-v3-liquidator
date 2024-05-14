@@ -63,6 +63,7 @@ where
                 .await
                 .context("Error getting gas price: {}")?;
             let estimated_cost = bid_gas_price.mul(gas_usage);
+            //@todo
             if estimated_cost > gas_bid_info.total_profit {
                 anyhow::bail!("Estimated cost of tx is greater than total profit");
             }
