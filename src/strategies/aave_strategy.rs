@@ -627,7 +627,7 @@ impl<M: Middleware + 'static> AaveStrategy<M> {
         )?;
 
         info!(
-            "Found opportunity2 - collateral: {:?}, debt: {:?}, collateral_to_liquidate: {:?}, debt_to_cover: {:?}, profit_eth: {:?}",
+            "Found opportunity - collateral: {:?}, debt: {:?}, collateral_to_liquidate: {:?}, debt_to_cover: {:?}, profit_eth: {:?}",
             collateral_address, debt_address, collateral_to_liquidate, debt_to_cover, op.profit_eth
         );
 
@@ -644,8 +644,6 @@ impl<M: Middleware + 'static> AaveStrategy<M> {
             .encode_liquidation_call(op.collateral, op.debt, op.borrower, op.debt_to_cover, false)
             .call()
             .await?;
-
-        info!("data0: {:?}, data1: {:?}", data0, data1);
 
         // TODO: handle arbitrary pool fees
         Ok(liquidator.liquidate(op.collateral, op.debt, 100, op.debt_to_cover, data0, data1))
