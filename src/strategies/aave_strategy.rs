@@ -12,14 +12,16 @@ use bindings_aave::{
     l2_encoder::L2Encoder,
     pool::{BorrowFilter, Pool, SupplyFilter},
 };
-use bindings_liquidator::liquidator::Liquidator;
+use bindings_liquidator::liquidator::{Liquidator, ParaSwapData};
 use clap::{Parser, ValueEnum};
+use ethers::core::types::Bytes;
 use ethers::{
     contract::builders::ContractCall,
     providers::Middleware,
     types::{transaction::eip2718::TypedTransaction, Address, ValueOrArray, H160, I256, U256, U64},
 };
 use ethers_contract::Multicall;
+use reqwest::{header::HeaderValue, Client, Error as ReqwestError};
 use serde::{Deserialize, Serialize};
 use std::collections::{HashMap, HashSet};
 use std::fs::File;
@@ -28,6 +30,8 @@ use std::iter::zip;
 use std::str::FromStr;
 use std::sync::Arc;
 use tracing::{error, info};
+use serde_json::Value;
+
 
 use super::types::{Action, Event};
 
@@ -58,6 +62,7 @@ pub const LOG_BLOCK_RANGE: u64 = 1024;
 pub const MULTICALL_CHUNK_SIZE: usize = 100;
 pub const STATE_CACHE_FILE: &str = "borrowers.json";
 pub const PRICE_ONE: u64 = 100000000;
+pub const MAX_SLIPPAGE: u64 = 3; // 3% slippage
 
 fn get_deployment_config(deployment: Deployment) -> DeploymentConfig {
     match deployment {
@@ -110,6 +115,15 @@ pub struct TokenConfig {
     reserve_factor: u64,
     protocol_fee: u64,
 }
+
+#[derive(Debug, Serialize, Deserialize)]
+pub struct BuildTxResponse {
+    from: String,
+    to: String,
+    value: String,
+    data: String
+}
+
 
 #[derive(Debug)]
 #[allow(dead_code)]
@@ -645,9 +659,68 @@ impl<M: Middleware + 'static> AaveStrategy<M> {
             .call()
             .await?;
 
-        // TODO: handle arbitrary pool fees
-        Ok(liquidator.liquidate(op.collateral, op.debt, 100, op.debt_to_cover, data0, data1))
+        
+        let paraswap_data = self.get_paraswap_data(op).await?;
+        Ok(liquidator.liquidate(
+            op.collateral, 
+            op.debt, 
+            op.debt_to_cover, 
+            data0, 
+            data1, 
+            paraswap_data
+        ))
     }
+
+    async fn get_paraswap_data(&self, op: &LiquidationOpportunity) -> Result<ParaSwapData> {
+        let user_address = "0x63c34506f4f6280D42E7533Ae1d1d657ca4C6c3B"; //@todo 
+        let client = Client::new();
+        let url = format!(
+            "https://apiv5.paraswap.io/prices?srcToken={}&srcDecimals={}&destToken={}&destDecimals={}&amount={}&side={}&network={}&userAddress={}",
+            op.collateral.to_string(),
+            self.tokens.get(&op.collateral).unwrap().decimals,
+            op.debt.to_string(),
+            self.tokens.get(&op.debt).unwrap().decimals,
+            op.debt_to_cover,
+            "BUY",
+            self.chain_id,
+            user_address
+        );
+
+        let response_json: Value = client.get(url).send().await?.json().await?;
+        let price_route =  response_json.get("priceRoute").unwrap();
+
+        let build_tx_url = format!(
+            "https://apiv5.paraswap.io/transactions/{}",
+            self.chain_id
+        );
+        
+        let src_amount = U256::from_dec_str(&price_route.get("srcAmount").unwrap().to_string())? * U256::from((100 + MAX_SLIPPAGE) / 100);
+
+        let paraswap_data: BuildTxResponse = client.post(build_tx_url)
+            .json(&serde_json::json!({
+                "srcToken": op.collateral.to_string(),
+                "destToken": op.debt.to_string(),
+                "srcAmount": src_amount.to_string(),
+                "destAmount": op.debt_to_cover.to_string(),
+                //price route from response json price route
+                "priceRoute": price_route,
+                "userAddress": user_address, 
+                "partner": "DL",
+                "srcDecimals": self.tokens.get(&op.collateral).unwrap().decimals,
+                "destDecimals": self.tokens.get(&op.debt).unwrap().decimals
+            }))
+            .send()
+            .await?.json().await?;
+        
+        Ok(ParaSwapData {
+            augustus: H160::from_str(&paraswap_data.to).unwrap(),
+            src_asset: op.collateral,
+            dest_asset: op.debt,
+            src_amount,
+            swap_call_data: Bytes::from_str(&paraswap_data.data).unwrap()
+        })
+    }
+
 
     async fn build_liquidation(&self, op: &LiquidationOpportunity) -> Result<TypedTransaction> {
         let mut call = self.build_liquidation_call(op).await?;

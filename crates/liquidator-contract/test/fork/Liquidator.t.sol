@@ -11,6 +11,8 @@ import {IAaveOracle} from "../../src/interfaces/IAaveOracle.sol";
 import {IPoolAddressesProvider} from "../../src/interfaces/IAddressesProvider.sol";
 import {IPoolDataProvider} from "../../src/interfaces/IPoolDataProvider.sol";
 import {IQuoterV2} from "../../src/interfaces/IQuoterV2.sol";
+import {IParaSwapAugustusRegistry} from "../../src/interfaces/paraswap/IParaSwapAugustusRegistry.sol";
+
 
 contract LiquidatorTest is Test {
     ERC20 constant aweth = ERC20(0xD4a0e0b9149BCee3C920d2E00b5dE09138fd8bb7);
@@ -27,6 +29,9 @@ contract LiquidatorTest is Test {
     address constant aaveAdmin = 0xA9F30e6ED4098e9439B2ac8aEA2d3fc26BcEbb45;
     uint256 constant wethUnit = 10 ** 18;
     uint256 constant usdcUnit = 10 ** 6;
+    IParaSwapAugustusRegistry constant augustusRegistry =
+        IParaSwapAugustusRegistry(0x6e7bE86000dF697facF4396efD2aE2C322165dC3);
+
     Liquidator liquidator;
     IL2Pool pool;
     address user;
@@ -35,7 +40,7 @@ contract LiquidatorTest is Test {
         vm.createSelectFork(vm.envString("FORK_URL"));
         oracle = new MockOracle();
         user = makeAddr("user");
-        liquidator = new Liquidator();
+        liquidator = new Liquidator(augustusRegistry);
         liquidator.approvePool(address(weth));
         liquidator.approvePool(address(usdc));
         pool = liquidator.pool();
@@ -94,7 +99,16 @@ contract LiquidatorTest is Test {
 
         (bytes32 arg1, bytes32 arg2) =
             encoder.encodeLiquidationCall(address(weth), address(usdc), user, debtToCover, false);
-        liquidator.liquidate(address(weth), address(usdc), 500, debtToCover, arg1, arg2);
+        
+        Liquidator.ParaSwapData memory paraSwapData = Liquidator.ParaSwapData({
+            augustus: address(0), //@todo
+            srcAsset: address(weth),
+            destAsset: address(usdc),
+            srcAmount: debtToCover,
+            swapCallData: abi.encode()
+        });
+
+        liquidator.liquidate(address(weth), address(usdc), debtToCover, arg1, arg2, paraSwapData);
         assertEq(weth.balanceOf(address(liquidator)), expectedGain);
     }
 
@@ -142,7 +156,17 @@ contract LiquidatorTest is Test {
 
         (bytes32 arg1, bytes32 arg2) =
             encoder.encodeLiquidationCall(address(usdc), address(weth), user, debtToCover, false);
-        liquidator.liquidate(address(usdc), address(weth), 500, debtToCover, arg1, arg2);
+
+        
+        Liquidator.ParaSwapData memory paraSwapData = Liquidator.ParaSwapData({
+            augustus: address(0), //@todo
+            srcAsset: address(weth),
+            destAsset: address(usdc),
+            srcAmount: debtToCover,
+            swapCallData: abi.encode()
+        });
+
+        liquidator.liquidate(address(usdc), address(weth), debtToCover, arg1, arg2, paraSwapData);
         assertEq(usdc.balanceOf(address(liquidator)), expectedGain);
     }
 
