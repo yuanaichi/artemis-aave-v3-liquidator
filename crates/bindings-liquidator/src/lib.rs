@@ -10,6 +10,7 @@ pub mod i_aave_oracle;
 pub mod i_flash_loan_recipient;
 pub mod i_para_swap_augustus;
 pub mod i_para_swap_augustus_registry;
+pub mod i_pool;
 pub mod i_pool_addresses_provider;
 pub mod i_pool_data_provider;
 pub mod i_quoter_v2;

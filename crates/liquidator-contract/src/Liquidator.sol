@@ -4,15 +4,16 @@ pragma solidity ^0.8.13;
 import {Owned} from "solmate/auth/Owned.sol";
 import {ERC20} from "solmate/tokens/ERC20.sol";
 import {IL2Pool} from "./interfaces/IL2Pool.sol";
+import {IPool} from "./interfaces/IPool.sol";
 import {IParaSwapAugustusRegistry} from "./interfaces/paraswap/IParaSwapAugustusRegistry.sol";
 import {IParaSwapAugustus} from "./interfaces/paraswap/IParaSwapAugustus.sol";
 import {IVault} from "./interfaces/balancer-v2/IVault.sol";
 import {IFlashLoanRecipient} from "./interfaces/balancer-v2/IFlashLoanRecipient.sol";
-import {SafeERC20} from "./lib/SafeERC20.sol";
 
 contract Liquidator is Owned, IFlashLoanRecipient {
-    using SafeERC20 for ERC20;
     IVault private constant vault = IVault(0xBA12222222228d8Ba445958a75a0704d566BF2C8); // const value for all chains
+    IL2Pool public constant pool = IL2Pool(0x794a61358D6845594F94dc1DB02A252b5b4814aD); //optimism L2 pool proxy address
+    IPool public constant flashLoanPool = IPool(0x794a61358D6845594F94dc1DB02A252b5b4814aD); 
 
     struct ParaSwapData {
         address augustus;
@@ -23,9 +24,6 @@ contract Liquidator is Owned, IFlashLoanRecipient {
     }
     
     IParaSwapAugustusRegistry public immutable AUGUSTUS_REGISTRY;
-
-    IL2Pool public constant pool = IL2Pool(0x794a61358D6845594F94dc1DB02A252b5b4814aD); //optimism L2 pool proxy address
-
     constructor(IParaSwapAugustusRegistry augustusRegistry) Owned(msg.sender) {
         require(!augustusRegistry.isValidAugustus(address(0)), 'Not a valid Augustus address');
         AUGUSTUS_REGISTRY = augustusRegistry;
@@ -73,7 +71,7 @@ contract Liquidator is Owned, IFlashLoanRecipient {
             address onBehalfOf = address(this);
             uint16 referralCode = 0;
 
-            pool.flashLoan(address(this), flashLoanAssets, flashLoanAmounts, modes, onBehalfOf, params, referralCode);
+            flashLoanPool.flashLoan(address(this), flashLoanAssets, flashLoanAmounts, modes, onBehalfOf, params, referralCode);
         }
     }
 
@@ -140,15 +138,6 @@ contract Liquidator is Owned, IFlashLoanRecipient {
         pool.liquidationCall(liquidationArg1, liquidationArg2);
 
         // swap the collateral for the debt, side BUY on ParaSwap
-        //srcAmount dont include the flash loan fee @todo 
-        // 借款 1000 flash loan 手续费 10u 1000+10 = 1010 swap 的时候 srcAmount 是 1000
-        // 但是实际的时候只还 1000 10 是flashloan fee 
-        // debtToCover = 1000 
-        // flash loan amount 1000 fee 10
-        // aave repay amount 1000
-        // src amount  = 1010  include fee
-        // flash loan repay amount 1010
-        // src amount  = flash loan repay 
         _paraSwap(psp);
 
         if (isVaultFlash) {

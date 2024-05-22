@@ -22,7 +22,7 @@ use ethers::{
 };
 use ethers_contract::Multicall;
 use reqwest::header;
-use reqwest::{header::HeaderValue, Client};
+use reqwest::{Client};
 use serde::{Deserialize, Serialize};
 use std::collections::{HashMap, HashSet};
 use std::fs::File;
@@ -64,6 +64,7 @@ pub const MULTICALL_CHUNK_SIZE: usize = 100;
 pub const STATE_CACHE_FILE: &str = "borrowers.json";
 pub const PRICE_ONE: u64 = 100000000;
 pub const MAX_SLIPPAGE: u64 = 3; // 3% slippage
+pub const VAULT_ADDRESS: &str = "0xBA12222222228d8Ba445958a75a0704d566BF2C8";
 
 fn get_deployment_config(deployment: Deployment) -> DeploymentConfig {
     match deployment {
@@ -672,17 +673,32 @@ impl<M: Middleware + 'static> AaveStrategy<M> {
         ))
     }
 
+    async fn check_vault_liquidity(&self, token: &Address, amount: &U256) -> Result<bool> {
+        let balance = IERC20::new(token.clone(), self.client.clone())
+            .balance_of(Address::from_str(VAULT_ADDRESS).unwrap())
+            .await?;
+
+        Ok(balance.gt(amount))
+    }
+
     async fn get_paraswap_data(&self, op: &LiquidationOpportunity) -> Result<ParaSwapData> {
         // https://app.swaggerhub.com/apis/paraswapv5/api/1.0#/prices/get_prices 
         let user_address = "0x63c34506f4f6280D42E7533Ae1d1d657ca4C6c3B"; //@todo 
         let client = Client::new();
+        
+        let mut dest_amount = op.debt_to_cover;
+
+        if self.check_vault_liquidity(&op.debt, &op.debt_to_cover).await? == false {
+            dest_amount = op.debt_to_cover * (U256::from(10000 + 5) / 10000); // 0.05%
+        }
+
         let url = format!(
             "https://apiv5.paraswap.io/prices?srcToken={}&srcDecimals={}&destToken={}&destDecimals={}&amount={}&side={}&network={}&userAddress={}",
             op.collateral.to_string(),
             self.tokens.get(&op.collateral).unwrap().decimals,
             op.debt.to_string(),
             self.tokens.get(&op.debt).unwrap().decimals,
-            op.debt_to_cover,
+            dest_amount,
             "BUY",
             self.chain_id,
             user_address
@@ -707,7 +723,7 @@ impl<M: Middleware + 'static> AaveStrategy<M> {
                 "srcToken": op.collateral.to_string(),
                 "destToken": op.debt.to_string(),
                 "srcAmount": src_amount.to_string(),
-                "destAmount": op.debt_to_cover.to_string(),
+                "destAmount": dest_amount.to_string(),
                 //price route from response json price route
                 "priceRoute": price_route,
                 "userAddress": user_address, 
