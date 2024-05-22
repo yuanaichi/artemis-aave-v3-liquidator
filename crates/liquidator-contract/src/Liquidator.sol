@@ -42,20 +42,41 @@ contract Liquidator is Owned, IFlashLoanRecipient {
 
         uint256 collateralBalance = ERC20(collateral).balanceOf(address(this));
 
-        ERC20[] memory flashLoanAssets = new ERC20[](1);
-        flashLoanAssets[0] = ERC20(debt);
-        uint256[] memory flashLoanAmounts = new uint256[](1);
-        flashLoanAmounts[0] = debtToCover;
-        
-        vault.flashLoan(
-            this,
-            flashLoanAssets, 
-            flashLoanAmounts, 
-            abi.encode(psp, collateral, debt, liquidationArg1, liquidationArg2)
-        );
+        bytes memory params = abi.encode(psp, collateral, debt, liquidationArg1, liquidationArg2);
+        _flashLoan(debt, debtToCover, params);
 
         collateralGain = int256(ERC20(collateral).balanceOf(address(this))) - int256(collateralBalance);
     }
+
+    
+    function _checkVaultLiquidity(address flashToken, uint256 amount) internal view returns (bool) {
+        return ERC20(flashToken).balanceOf(address(vault)) >= amount;
+    }
+
+    function _flashLoan(address asset, uint256 amount, bytes memory params) internal {
+        if (_checkVaultLiquidity(asset, amount)) {
+            // balancer vault flashloan
+            ERC20[] memory flashLoanAssets = new ERC20[](1);
+            flashLoanAssets[0] = ERC20(asset);
+            uint256[] memory flashLoanAmounts = new uint256[](1);
+            flashLoanAmounts[0] = amount;
+            vault.flashLoan(this, flashLoanAssets, flashLoanAmounts, params);
+        } else {
+            // aave flashloan
+            address[] memory flashLoanAssets = new address[](1);
+            flashLoanAssets[0] = asset;
+            uint256[] memory flashLoanAmounts = new uint256[](1);
+            flashLoanAmounts[0] = amount;
+            uint256[] memory modes = new uint256[](1);
+            modes[0] = 0;
+
+            address onBehalfOf = address(this);
+            uint16 referralCode = 0;
+
+            pool.flashLoan(address(this), flashLoanAssets, flashLoanAmounts, modes, onBehalfOf, params, referralCode);
+        }
+    }
+
 
     function _paraSwap(ParaSwapData memory psp) internal returns (bool) {
         IParaSwapAugustus augustus = IParaSwapAugustus(psp.augustus);
@@ -64,8 +85,7 @@ contract Liquidator is Owned, IFlashLoanRecipient {
 
         ERC20 assetToSwapFrom = ERC20(psp.srcAsset);
         address tokenTransferProxy = augustus.getTokenTransferProxy();
-        assetToSwapFrom.safeApprove(tokenTransferProxy, 0);
-        assetToSwapFrom.safeApprove(tokenTransferProxy, psp.srcAmount);
+        assetToSwapFrom.approve(tokenTransferProxy, psp.srcAmount);
 
         (bool success, ) = address(augustus).call(psp.swapCallData);
         if (!success) {
@@ -78,6 +98,22 @@ contract Liquidator is Owned, IFlashLoanRecipient {
 
         return success;
     }
+    
+    function executeOperation(
+        address[] calldata assets,
+        uint256[] calldata amounts,
+        uint256[] calldata premiums,
+        address initiator,
+        bytes calldata params
+    ) external returns (bool) {
+        require(msg.sender == address(pool), 'only the lending pool can call this function');
+        require(initiator == address(this), 'the ape did not initiate this flashloan');
+
+        uint256 repayAmount = amounts[0] + premiums[0];
+        _runApe(repayAmount, params, false);
+
+        return true;
+    }
 
     function receiveFlashLoan(
         ERC20[] memory tokens,
@@ -87,6 +123,12 @@ contract Liquidator is Owned, IFlashLoanRecipient {
     ) external override {
         require(msg.sender == address(vault), 'caller is not the vault');
         
+        uint256 repayAmount = amounts[0] + feeAmounts[0];
+        _runApe(repayAmount, userData, true);
+    }
+
+    function _runApe(uint256 repayAmount, bytes memory userData, bool isVaultFlash) internal returns (bool){
+
         (
             ParaSwapData memory psp,
             address collateral,
@@ -95,15 +137,27 @@ contract Liquidator is Owned, IFlashLoanRecipient {
             bytes32 liquidationArg2
         ) = abi.decode(userData, (ParaSwapData, address, address, bytes32, bytes32));
         
-        // uint256 flashLoanAmount = amounts[0];
-        uint256 repayAmount = amounts[0] + feeAmounts[0];
-
         pool.liquidationCall(liquidationArg1, liquidationArg2);
 
         // swap the collateral for the debt, side BUY on ParaSwap
+        //srcAmount dont include the flash loan fee @todo 
+        // 借款 1000 flash loan 手续费 10u 1000+10 = 1010 swap 的时候 srcAmount 是 1000
+        // 但是实际的时候只还 1000 10 是flashloan fee 
+        // debtToCover = 1000 
+        // flash loan amount 1000 fee 10
+        // aave repay amount 1000
+        // src amount  = 1010  include fee
+        // flash loan repay amount 1010
+        // src amount  = flash loan repay 
         _paraSwap(psp);
 
-        ERC20(debt).transfer(msg.sender, repayAmount);
+        if (isVaultFlash) {
+            ERC20(debt).transfer(msg.sender, repayAmount);
+        } else {
+            ERC20(debt).approve(address(pool), repayAmount);
+        }
+
+        return true;
     }
 
     function approvePool(address token) external onlyOwner {

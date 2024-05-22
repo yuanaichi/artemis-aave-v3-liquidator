@@ -21,7 +21,8 @@ use ethers::{
     types::{transaction::eip2718::TypedTransaction, Address, ValueOrArray, H160, I256, U256, U64},
 };
 use ethers_contract::Multicall;
-use reqwest::{header::HeaderValue, Client, Error as ReqwestError};
+use reqwest::header;
+use reqwest::{header::HeaderValue, Client};
 use serde::{Deserialize, Serialize};
 use std::collections::{HashMap, HashSet};
 use std::fs::File;
@@ -672,6 +673,7 @@ impl<M: Middleware + 'static> AaveStrategy<M> {
     }
 
     async fn get_paraswap_data(&self, op: &LiquidationOpportunity) -> Result<ParaSwapData> {
+        // https://app.swaggerhub.com/apis/paraswapv5/api/1.0#/prices/get_prices 
         let user_address = "0x63c34506f4f6280D42E7533Ae1d1d657ca4C6c3B"; //@todo 
         let client = Client::new();
         let url = format!(
@@ -686,7 +688,11 @@ impl<M: Middleware + 'static> AaveStrategy<M> {
             user_address
         );
 
-        let response_json: Value = client.get(url).send().await?.json().await?;
+        let response_json: Value = client
+            .get(url)
+            .header(header::ACCEPT, "accept: application/json")
+            .send().await?.json().await?;
+        
         let price_route =  response_json.get("priceRoute").unwrap();
 
         let build_tx_url = format!(

@@ -10,7 +10,6 @@ import {IL2Encoder} from "../../src/interfaces/IL2Encoder.sol";
 import {IAaveOracle} from "../../src/interfaces/IAaveOracle.sol";
 import {IPoolAddressesProvider} from "../../src/interfaces/IAddressesProvider.sol";
 import {IPoolDataProvider} from "../../src/interfaces/IPoolDataProvider.sol";
-import {IQuoterV2} from "../../src/interfaces/IQuoterV2.sol";
 import {IParaSwapAugustusRegistry} from "../../src/interfaces/paraswap/IParaSwapAugustusRegistry.sol";
 
 
