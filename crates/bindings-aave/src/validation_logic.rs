@@ -264,6 +264,8 @@ pub mod validation_logic {
         Clone,
         ::ethers::contract::EthCall,
         ::ethers::contract::EthDisplay,
+        serde::Serialize,
+        serde::Deserialize,
         Default,
         Debug,
         PartialEq,
@@ -280,6 +282,8 @@ pub mod validation_logic {
         Clone,
         ::ethers::contract::EthCall,
         ::ethers::contract::EthDisplay,
+        serde::Serialize,
+        serde::Deserialize,
         Default,
         Debug,
         PartialEq,
@@ -296,6 +300,8 @@ pub mod validation_logic {
         Clone,
         ::ethers::contract::EthCall,
         ::ethers::contract::EthDisplay,
+        serde::Serialize,
+        serde::Deserialize,
         Default,
         Debug,
         PartialEq,
@@ -312,6 +318,8 @@ pub mod validation_logic {
         Clone,
         ::ethers::contract::EthCall,
         ::ethers::contract::EthDisplay,
+        serde::Serialize,
+        serde::Deserialize,
         Default,
         Debug,
         PartialEq,
@@ -324,7 +332,16 @@ pub mod validation_logic {
     )]
     pub struct RebalanceUpLiquidityRateThresholdCall;
     ///Container type for all of the contract's call
-    #[derive(Clone, ::ethers::contract::EthAbiType, Debug, PartialEq, Eq, Hash)]
+    #[derive(
+        Clone,
+        ::ethers::contract::EthAbiType,
+        serde::Serialize,
+        serde::Deserialize,
+        Debug,
+        PartialEq,
+        Eq,
+        Hash
+    )]
     pub enum ValidationLogicCalls {
         HealthFactorLiquidationThreshold(HealthFactorLiquidationThresholdCall),
         IsolatedCollateralSupplierRole(IsolatedCollateralSupplierRoleCall),
@@ -338,28 +355,24 @@ pub mod validation_logic {
             data: impl AsRef<[u8]>,
         ) -> ::core::result::Result<Self, ::ethers::core::abi::AbiError> {
             let data = data.as_ref();
-            if let Ok(decoded)
-                = <HealthFactorLiquidationThresholdCall as ::ethers::core::abi::AbiDecode>::decode(
-                    data,
-                ) {
+            if let Ok(decoded) = <HealthFactorLiquidationThresholdCall as ::ethers::core::abi::AbiDecode>::decode(
+                data,
+            ) {
                 return Ok(Self::HealthFactorLiquidationThreshold(decoded));
             }
-            if let Ok(decoded)
-                = <IsolatedCollateralSupplierRoleCall as ::ethers::core::abi::AbiDecode>::decode(
-                    data,
-                ) {
+            if let Ok(decoded) = <IsolatedCollateralSupplierRoleCall as ::ethers::core::abi::AbiDecode>::decode(
+                data,
+            ) {
                 return Ok(Self::IsolatedCollateralSupplierRole(decoded));
             }
-            if let Ok(decoded)
-                = <MinimumHealthFactorLiquidationThresholdCall as ::ethers::core::abi::AbiDecode>::decode(
-                    data,
-                ) {
+            if let Ok(decoded) = <MinimumHealthFactorLiquidationThresholdCall as ::ethers::core::abi::AbiDecode>::decode(
+                data,
+            ) {
                 return Ok(Self::MinimumHealthFactorLiquidationThreshold(decoded));
             }
-            if let Ok(decoded)
-                = <RebalanceUpLiquidityRateThresholdCall as ::ethers::core::abi::AbiDecode>::decode(
-                    data,
-                ) {
+            if let Ok(decoded) = <RebalanceUpLiquidityRateThresholdCall as ::ethers::core::abi::AbiDecode>::decode(
+                data,
+            ) {
                 return Ok(Self::RebalanceUpLiquidityRateThreshold(decoded));
             }
             Err(::ethers::core::abi::Error::InvalidData.into())
@@ -430,6 +443,8 @@ pub mod validation_logic {
         Clone,
         ::ethers::contract::EthAbiType,
         ::ethers::contract::EthAbiCodec,
+        serde::Serialize,
+        serde::Deserialize,
         Default,
         Debug,
         PartialEq,
@@ -442,6 +457,8 @@ pub mod validation_logic {
         Clone,
         ::ethers::contract::EthAbiType,
         ::ethers::contract::EthAbiCodec,
+        serde::Serialize,
+        serde::Deserialize,
         Default,
         Debug,
         PartialEq,
@@ -454,6 +471,8 @@ pub mod validation_logic {
         Clone,
         ::ethers::contract::EthAbiType,
         ::ethers::contract::EthAbiCodec,
+        serde::Serialize,
+        serde::Deserialize,
         Default,
         Debug,
         PartialEq,
@@ -468,6 +487,8 @@ pub mod validation_logic {
         Clone,
         ::ethers::contract::EthAbiType,
         ::ethers::contract::EthAbiCodec,
+        serde::Serialize,
+        serde::Deserialize,
         Default,
         Debug,
         PartialEq,

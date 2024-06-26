@@ -579,6 +579,8 @@ pub mod i_default_interest_rate_strategy {
         Clone,
         ::ethers::contract::EthCall,
         ::ethers::contract::EthDisplay,
+        serde::Serialize,
+        serde::Deserialize,
         Default,
         Debug,
         PartialEq,
@@ -592,6 +594,8 @@ pub mod i_default_interest_rate_strategy {
         Clone,
         ::ethers::contract::EthCall,
         ::ethers::contract::EthDisplay,
+        serde::Serialize,
+        serde::Deserialize,
         Default,
         Debug,
         PartialEq,
@@ -608,6 +612,8 @@ pub mod i_default_interest_rate_strategy {
         Clone,
         ::ethers::contract::EthCall,
         ::ethers::contract::EthDisplay,
+        serde::Serialize,
+        serde::Deserialize,
         Default,
         Debug,
         PartialEq,
@@ -621,6 +627,8 @@ pub mod i_default_interest_rate_strategy {
         Clone,
         ::ethers::contract::EthCall,
         ::ethers::contract::EthDisplay,
+        serde::Serialize,
+        serde::Deserialize,
         Default,
         Debug,
         PartialEq,
@@ -637,6 +645,8 @@ pub mod i_default_interest_rate_strategy {
         Clone,
         ::ethers::contract::EthCall,
         ::ethers::contract::EthDisplay,
+        serde::Serialize,
+        serde::Deserialize,
         Default,
         Debug,
         PartialEq,
@@ -650,6 +660,8 @@ pub mod i_default_interest_rate_strategy {
         Clone,
         ::ethers::contract::EthCall,
         ::ethers::contract::EthDisplay,
+        serde::Serialize,
+        serde::Deserialize,
         Default,
         Debug,
         PartialEq,
@@ -668,6 +680,8 @@ pub mod i_default_interest_rate_strategy {
         Clone,
         ::ethers::contract::EthCall,
         ::ethers::contract::EthDisplay,
+        serde::Serialize,
+        serde::Deserialize,
         Default,
         Debug,
         PartialEq,
@@ -681,6 +695,8 @@ pub mod i_default_interest_rate_strategy {
         Clone,
         ::ethers::contract::EthCall,
         ::ethers::contract::EthDisplay,
+        serde::Serialize,
+        serde::Deserialize,
         Default,
         Debug,
         PartialEq,
@@ -694,6 +710,8 @@ pub mod i_default_interest_rate_strategy {
         Clone,
         ::ethers::contract::EthCall,
         ::ethers::contract::EthDisplay,
+        serde::Serialize,
+        serde::Deserialize,
         Default,
         Debug,
         PartialEq,
@@ -707,6 +725,8 @@ pub mod i_default_interest_rate_strategy {
         Clone,
         ::ethers::contract::EthCall,
         ::ethers::contract::EthDisplay,
+        serde::Serialize,
+        serde::Deserialize,
         Default,
         Debug,
         PartialEq,
@@ -720,6 +740,8 @@ pub mod i_default_interest_rate_strategy {
         Clone,
         ::ethers::contract::EthCall,
         ::ethers::contract::EthDisplay,
+        serde::Serialize,
+        serde::Deserialize,
         Default,
         Debug,
         PartialEq,
@@ -733,6 +755,8 @@ pub mod i_default_interest_rate_strategy {
         Clone,
         ::ethers::contract::EthCall,
         ::ethers::contract::EthDisplay,
+        serde::Serialize,
+        serde::Deserialize,
         Default,
         Debug,
         PartialEq,
@@ -746,6 +770,8 @@ pub mod i_default_interest_rate_strategy {
         Clone,
         ::ethers::contract::EthCall,
         ::ethers::contract::EthDisplay,
+        serde::Serialize,
+        serde::Deserialize,
         Default,
         Debug,
         PartialEq,
@@ -759,6 +785,8 @@ pub mod i_default_interest_rate_strategy {
         Clone,
         ::ethers::contract::EthCall,
         ::ethers::contract::EthDisplay,
+        serde::Serialize,
+        serde::Deserialize,
         Default,
         Debug,
         PartialEq,
@@ -768,7 +796,16 @@ pub mod i_default_interest_rate_strategy {
     #[ethcall(name = "getVariableRateSlope2", abi = "getVariableRateSlope2()")]
     pub struct GetVariableRateSlope2Call;
     ///Container type for all of the contract's call
-    #[derive(Clone, ::ethers::contract::EthAbiType, Debug, PartialEq, Eq, Hash)]
+    #[derive(
+        Clone,
+        ::ethers::contract::EthAbiType,
+        serde::Serialize,
+        serde::Deserialize,
+        Debug,
+        PartialEq,
+        Eq,
+        Hash
+    )]
     pub enum IDefaultInterestRateStrategyCalls {
         AddressesProvider(AddressesProviderCall),
         MaxExcessStableToTotalDebtRatio(MaxExcessStableToTotalDebtRatioCall),
@@ -790,88 +827,74 @@ pub mod i_default_interest_rate_strategy {
             data: impl AsRef<[u8]>,
         ) -> ::core::result::Result<Self, ::ethers::core::abi::AbiError> {
             let data = data.as_ref();
-            if let Ok(decoded)
-                = <AddressesProviderCall as ::ethers::core::abi::AbiDecode>::decode(
-                    data,
-                ) {
+            if let Ok(decoded) = <AddressesProviderCall as ::ethers::core::abi::AbiDecode>::decode(
+                data,
+            ) {
                 return Ok(Self::AddressesProvider(decoded));
             }
-            if let Ok(decoded)
-                = <MaxExcessStableToTotalDebtRatioCall as ::ethers::core::abi::AbiDecode>::decode(
-                    data,
-                ) {
+            if let Ok(decoded) = <MaxExcessStableToTotalDebtRatioCall as ::ethers::core::abi::AbiDecode>::decode(
+                data,
+            ) {
                 return Ok(Self::MaxExcessStableToTotalDebtRatio(decoded));
             }
-            if let Ok(decoded)
-                = <MaxExcessUsageRatioCall as ::ethers::core::abi::AbiDecode>::decode(
-                    data,
-                ) {
+            if let Ok(decoded) = <MaxExcessUsageRatioCall as ::ethers::core::abi::AbiDecode>::decode(
+                data,
+            ) {
                 return Ok(Self::MaxExcessUsageRatio(decoded));
             }
-            if let Ok(decoded)
-                = <OptimalStableToTotalDebtRatioCall as ::ethers::core::abi::AbiDecode>::decode(
-                    data,
-                ) {
+            if let Ok(decoded) = <OptimalStableToTotalDebtRatioCall as ::ethers::core::abi::AbiDecode>::decode(
+                data,
+            ) {
                 return Ok(Self::OptimalStableToTotalDebtRatio(decoded));
             }
-            if let Ok(decoded)
-                = <OptimalUsageRatioCall as ::ethers::core::abi::AbiDecode>::decode(
-                    data,
-                ) {
+            if let Ok(decoded) = <OptimalUsageRatioCall as ::ethers::core::abi::AbiDecode>::decode(
+                data,
+            ) {
                 return Ok(Self::OptimalUsageRatio(decoded));
             }
-            if let Ok(decoded)
-                = <CalculateInterestRatesCall as ::ethers::core::abi::AbiDecode>::decode(
-                    data,
-                ) {
+            if let Ok(decoded) = <CalculateInterestRatesCall as ::ethers::core::abi::AbiDecode>::decode(
+                data,
+            ) {
                 return Ok(Self::CalculateInterestRates(decoded));
             }
-            if let Ok(decoded)
-                = <GetBaseStableBorrowRateCall as ::ethers::core::abi::AbiDecode>::decode(
-                    data,
-                ) {
+            if let Ok(decoded) = <GetBaseStableBorrowRateCall as ::ethers::core::abi::AbiDecode>::decode(
+                data,
+            ) {
                 return Ok(Self::GetBaseStableBorrowRate(decoded));
             }
-            if let Ok(decoded)
-                = <GetBaseVariableBorrowRateCall as ::ethers::core::abi::AbiDecode>::decode(
-                    data,
-                ) {
+            if let Ok(decoded) = <GetBaseVariableBorrowRateCall as ::ethers::core::abi::AbiDecode>::decode(
+                data,
+            ) {
                 return Ok(Self::GetBaseVariableBorrowRate(decoded));
             }
-            if let Ok(decoded)
-                = <GetMaxVariableBorrowRateCall as ::ethers::core::abi::AbiDecode>::decode(
-                    data,
-                ) {
+            if let Ok(decoded) = <GetMaxVariableBorrowRateCall as ::ethers::core::abi::AbiDecode>::decode(
+                data,
+            ) {
                 return Ok(Self::GetMaxVariableBorrowRate(decoded));
             }
-            if let Ok(decoded)
-                = <GetStableRateExcessOffsetCall as ::ethers::core::abi::AbiDecode>::decode(
-                    data,
-                ) {
+            if let Ok(decoded) = <GetStableRateExcessOffsetCall as ::ethers::core::abi::AbiDecode>::decode(
+                data,
+            ) {
                 return Ok(Self::GetStableRateExcessOffset(decoded));
             }
-            if let Ok(decoded)
-                = <GetStableRateSlope1Call as ::ethers::core::abi::AbiDecode>::decode(
-                    data,
-                ) {
+            if let Ok(decoded) = <GetStableRateSlope1Call as ::ethers::core::abi::AbiDecode>::decode(
+                data,
+            ) {
                 return Ok(Self::GetStableRateSlope1(decoded));
             }
-            if let Ok(decoded)
-                = <GetStableRateSlope2Call as ::ethers::core::abi::AbiDecode>::decode(
-                    data,
-                ) {
+            if let Ok(decoded) = <GetStableRateSlope2Call as ::ethers::core::abi::AbiDecode>::decode(
+                data,
+            ) {
                 return Ok(Self::GetStableRateSlope2(decoded));
             }
-            if let Ok(decoded)
-                = <GetVariableRateSlope1Call as ::ethers::core::abi::AbiDecode>::decode(
-                    data,
-                ) {
+            if let Ok(decoded) = <GetVariableRateSlope1Call as ::ethers::core::abi::AbiDecode>::decode(
+                data,
+            ) {
                 return Ok(Self::GetVariableRateSlope1(decoded));
             }
-            if let Ok(decoded)
-                = <GetVariableRateSlope2Call as ::ethers::core::abi::AbiDecode>::decode(
-                    data,
-                ) {
+            if let Ok(decoded) = <GetVariableRateSlope2Call as ::ethers::core::abi::AbiDecode>::decode(
+                data,
+            ) {
                 return Ok(Self::GetVariableRateSlope2(decoded));
             }
             Err(::ethers::core::abi::Error::InvalidData.into())
@@ -1058,6 +1081,8 @@ pub mod i_default_interest_rate_strategy {
         Clone,
         ::ethers::contract::EthAbiType,
         ::ethers::contract::EthAbiCodec,
+        serde::Serialize,
+        serde::Deserialize,
         Default,
         Debug,
         PartialEq,
@@ -1070,6 +1095,8 @@ pub mod i_default_interest_rate_strategy {
         Clone,
         ::ethers::contract::EthAbiType,
         ::ethers::contract::EthAbiCodec,
+        serde::Serialize,
+        serde::Deserialize,
         Default,
         Debug,
         PartialEq,
@@ -1082,6 +1109,8 @@ pub mod i_default_interest_rate_strategy {
         Clone,
         ::ethers::contract::EthAbiType,
         ::ethers::contract::EthAbiCodec,
+        serde::Serialize,
+        serde::Deserialize,
         Default,
         Debug,
         PartialEq,
@@ -1094,6 +1123,8 @@ pub mod i_default_interest_rate_strategy {
         Clone,
         ::ethers::contract::EthAbiType,
         ::ethers::contract::EthAbiCodec,
+        serde::Serialize,
+        serde::Deserialize,
         Default,
         Debug,
         PartialEq,
@@ -1106,6 +1137,8 @@ pub mod i_default_interest_rate_strategy {
         Clone,
         ::ethers::contract::EthAbiType,
         ::ethers::contract::EthAbiCodec,
+        serde::Serialize,
+        serde::Deserialize,
         Default,
         Debug,
         PartialEq,
@@ -1118,6 +1151,8 @@ pub mod i_default_interest_rate_strategy {
         Clone,
         ::ethers::contract::EthAbiType,
         ::ethers::contract::EthAbiCodec,
+        serde::Serialize,
+        serde::Deserialize,
         Default,
         Debug,
         PartialEq,
@@ -1134,6 +1169,8 @@ pub mod i_default_interest_rate_strategy {
         Clone,
         ::ethers::contract::EthAbiType,
         ::ethers::contract::EthAbiCodec,
+        serde::Serialize,
+        serde::Deserialize,
         Default,
         Debug,
         PartialEq,
@@ -1146,6 +1183,8 @@ pub mod i_default_interest_rate_strategy {
         Clone,
         ::ethers::contract::EthAbiType,
         ::ethers::contract::EthAbiCodec,
+        serde::Serialize,
+        serde::Deserialize,
         Default,
         Debug,
         PartialEq,
@@ -1158,6 +1197,8 @@ pub mod i_default_interest_rate_strategy {
         Clone,
         ::ethers::contract::EthAbiType,
         ::ethers::contract::EthAbiCodec,
+        serde::Serialize,
+        serde::Deserialize,
         Default,
         Debug,
         PartialEq,
@@ -1170,6 +1211,8 @@ pub mod i_default_interest_rate_strategy {
         Clone,
         ::ethers::contract::EthAbiType,
         ::ethers::contract::EthAbiCodec,
+        serde::Serialize,
+        serde::Deserialize,
         Default,
         Debug,
         PartialEq,
@@ -1182,6 +1225,8 @@ pub mod i_default_interest_rate_strategy {
         Clone,
         ::ethers::contract::EthAbiType,
         ::ethers::contract::EthAbiCodec,
+        serde::Serialize,
+        serde::Deserialize,
         Default,
         Debug,
         PartialEq,
@@ -1194,6 +1239,8 @@ pub mod i_default_interest_rate_strategy {
         Clone,
         ::ethers::contract::EthAbiType,
         ::ethers::contract::EthAbiCodec,
+        serde::Serialize,
+        serde::Deserialize,
         Default,
         Debug,
         PartialEq,
@@ -1206,6 +1253,8 @@ pub mod i_default_interest_rate_strategy {
         Clone,
         ::ethers::contract::EthAbiType,
         ::ethers::contract::EthAbiCodec,
+        serde::Serialize,
+        serde::Deserialize,
         Default,
         Debug,
         PartialEq,
@@ -1218,6 +1267,8 @@ pub mod i_default_interest_rate_strategy {
         Clone,
         ::ethers::contract::EthAbiType,
         ::ethers::contract::EthAbiCodec,
+        serde::Serialize,
+        serde::Deserialize,
         Default,
         Debug,
         PartialEq,

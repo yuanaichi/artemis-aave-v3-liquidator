@@ -407,6 +407,7 @@ name = "bindings-aave"
 version = "0.1.0"
 dependencies = [
  "ethers",
+ "serde",
 ]
 
 [[package]]

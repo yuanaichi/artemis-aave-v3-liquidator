@@ -188,6 +188,8 @@ pub mod reserve_configuration {
         Clone,
         ::ethers::contract::EthCall,
         ::ethers::contract::EthDisplay,
+        serde::Serialize,
+        serde::Deserialize,
         Default,
         Debug,
         PartialEq,
@@ -201,6 +203,8 @@ pub mod reserve_configuration {
         Clone,
         ::ethers::contract::EthCall,
         ::ethers::contract::EthDisplay,
+        serde::Serialize,
+        serde::Deserialize,
         Default,
         Debug,
         PartialEq,
@@ -210,7 +214,16 @@ pub mod reserve_configuration {
     #[ethcall(name = "MAX_RESERVES_COUNT", abi = "MAX_RESERVES_COUNT()")]
     pub struct MaxReservesCountCall;
     ///Container type for all of the contract's call
-    #[derive(Clone, ::ethers::contract::EthAbiType, Debug, PartialEq, Eq, Hash)]
+    #[derive(
+        Clone,
+        ::ethers::contract::EthAbiType,
+        serde::Serialize,
+        serde::Deserialize,
+        Debug,
+        PartialEq,
+        Eq,
+        Hash
+    )]
     pub enum ReserveConfigurationCalls {
         DebtCeilingDecimals(DebtCeilingDecimalsCall),
         MaxReservesCount(MaxReservesCountCall),
@@ -220,16 +233,14 @@ pub mod reserve_configuration {
             data: impl AsRef<[u8]>,
         ) -> ::core::result::Result<Self, ::ethers::core::abi::AbiError> {
             let data = data.as_ref();
-            if let Ok(decoded)
-                = <DebtCeilingDecimalsCall as ::ethers::core::abi::AbiDecode>::decode(
-                    data,
-                ) {
+            if let Ok(decoded) = <DebtCeilingDecimalsCall as ::ethers::core::abi::AbiDecode>::decode(
+                data,
+            ) {
                 return Ok(Self::DebtCeilingDecimals(decoded));
             }
-            if let Ok(decoded)
-                = <MaxReservesCountCall as ::ethers::core::abi::AbiDecode>::decode(
-                    data,
-                ) {
+            if let Ok(decoded) = <MaxReservesCountCall as ::ethers::core::abi::AbiDecode>::decode(
+                data,
+            ) {
                 return Ok(Self::MaxReservesCount(decoded));
             }
             Err(::ethers::core::abi::Error::InvalidData.into())
@@ -272,6 +283,8 @@ pub mod reserve_configuration {
         Clone,
         ::ethers::contract::EthAbiType,
         ::ethers::contract::EthAbiCodec,
+        serde::Serialize,
+        serde::Deserialize,
         Default,
         Debug,
         PartialEq,
@@ -284,6 +297,8 @@ pub mod reserve_configuration {
         Clone,
         ::ethers::contract::EthAbiType,
         ::ethers::contract::EthAbiCodec,
+        serde::Serialize,
+        serde::Deserialize,
         Default,
         Debug,
         PartialEq,

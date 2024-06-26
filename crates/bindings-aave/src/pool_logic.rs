@@ -203,6 +203,8 @@ pub mod pool_logic {
         Clone,
         ::ethers::contract::EthEvent,
         ::ethers::contract::EthDisplay,
+        serde::Serialize,
+        serde::Deserialize,
         Default,
         Debug,
         PartialEq,
@@ -222,6 +224,8 @@ pub mod pool_logic {
         Clone,
         ::ethers::contract::EthEvent,
         ::ethers::contract::EthDisplay,
+        serde::Serialize,
+        serde::Deserialize,
         Default,
         Debug,
         PartialEq,
@@ -235,7 +239,16 @@ pub mod pool_logic {
         pub amount_minted: ::ethers::core::types::U256,
     }
     ///Container type for all of the contract's events
-    #[derive(Clone, ::ethers::contract::EthAbiType, Debug, PartialEq, Eq, Hash)]
+    #[derive(
+        Clone,
+        ::ethers::contract::EthAbiType,
+        serde::Serialize,
+        serde::Deserialize,
+        Debug,
+        PartialEq,
+        Eq,
+        Hash
+    )]
     pub enum PoolLogicEvents {
         IsolationModeTotalDebtUpdatedFilter(IsolationModeTotalDebtUpdatedFilter),
         MintedToTreasuryFilter(MintedToTreasuryFilter),

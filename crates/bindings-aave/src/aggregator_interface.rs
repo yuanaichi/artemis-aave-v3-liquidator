@@ -335,6 +335,8 @@ pub mod aggregator_interface {
         Clone,
         ::ethers::contract::EthEvent,
         ::ethers::contract::EthDisplay,
+        serde::Serialize,
+        serde::Deserialize,
         Default,
         Debug,
         PartialEq,
@@ -353,6 +355,8 @@ pub mod aggregator_interface {
         Clone,
         ::ethers::contract::EthEvent,
         ::ethers::contract::EthDisplay,
+        serde::Serialize,
+        serde::Deserialize,
         Default,
         Debug,
         PartialEq,
@@ -368,7 +372,16 @@ pub mod aggregator_interface {
         pub started_at: ::ethers::core::types::U256,
     }
     ///Container type for all of the contract's events
-    #[derive(Clone, ::ethers::contract::EthAbiType, Debug, PartialEq, Eq, Hash)]
+    #[derive(
+        Clone,
+        ::ethers::contract::EthAbiType,
+        serde::Serialize,
+        serde::Deserialize,
+        Debug,
+        PartialEq,
+        Eq,
+        Hash
+    )]
     pub enum AggregatorInterfaceEvents {
         AnswerUpdatedFilter(AnswerUpdatedFilter),
         NewRoundFilter(NewRoundFilter),
@@ -411,6 +424,8 @@ pub mod aggregator_interface {
         Clone,
         ::ethers::contract::EthCall,
         ::ethers::contract::EthDisplay,
+        serde::Serialize,
+        serde::Deserialize,
         Default,
         Debug,
         PartialEq,
@@ -426,6 +441,8 @@ pub mod aggregator_interface {
         Clone,
         ::ethers::contract::EthCall,
         ::ethers::contract::EthDisplay,
+        serde::Serialize,
+        serde::Deserialize,
         Default,
         Debug,
         PartialEq,
@@ -441,6 +458,8 @@ pub mod aggregator_interface {
         Clone,
         ::ethers::contract::EthCall,
         ::ethers::contract::EthDisplay,
+        serde::Serialize,
+        serde::Deserialize,
         Default,
         Debug,
         PartialEq,
@@ -454,6 +473,8 @@ pub mod aggregator_interface {
         Clone,
         ::ethers::contract::EthCall,
         ::ethers::contract::EthDisplay,
+        serde::Serialize,
+        serde::Deserialize,
         Default,
         Debug,
         PartialEq,
@@ -467,6 +488,8 @@ pub mod aggregator_interface {
         Clone,
         ::ethers::contract::EthCall,
         ::ethers::contract::EthDisplay,
+        serde::Serialize,
+        serde::Deserialize,
         Default,
         Debug,
         PartialEq,
@@ -476,7 +499,16 @@ pub mod aggregator_interface {
     #[ethcall(name = "latestTimestamp", abi = "latestTimestamp()")]
     pub struct LatestTimestampCall;
     ///Container type for all of the contract's call
-    #[derive(Clone, ::ethers::contract::EthAbiType, Debug, PartialEq, Eq, Hash)]
+    #[derive(
+        Clone,
+        ::ethers::contract::EthAbiType,
+        serde::Serialize,
+        serde::Deserialize,
+        Debug,
+        PartialEq,
+        Eq,
+        Hash
+    )]
     pub enum AggregatorInterfaceCalls {
         GetAnswer(GetAnswerCall),
         GetTimestamp(GetTimestampCall),
@@ -489,24 +521,29 @@ pub mod aggregator_interface {
             data: impl AsRef<[u8]>,
         ) -> ::core::result::Result<Self, ::ethers::core::abi::AbiError> {
             let data = data.as_ref();
-            if let Ok(decoded)
-                = <GetAnswerCall as ::ethers::core::abi::AbiDecode>::decode(data) {
+            if let Ok(decoded) = <GetAnswerCall as ::ethers::core::abi::AbiDecode>::decode(
+                data,
+            ) {
                 return Ok(Self::GetAnswer(decoded));
             }
-            if let Ok(decoded)
-                = <GetTimestampCall as ::ethers::core::abi::AbiDecode>::decode(data) {
+            if let Ok(decoded) = <GetTimestampCall as ::ethers::core::abi::AbiDecode>::decode(
+                data,
+            ) {
                 return Ok(Self::GetTimestamp(decoded));
             }
-            if let Ok(decoded)
-                = <LatestAnswerCall as ::ethers::core::abi::AbiDecode>::decode(data) {
+            if let Ok(decoded) = <LatestAnswerCall as ::ethers::core::abi::AbiDecode>::decode(
+                data,
+            ) {
                 return Ok(Self::LatestAnswer(decoded));
             }
-            if let Ok(decoded)
-                = <LatestRoundCall as ::ethers::core::abi::AbiDecode>::decode(data) {
+            if let Ok(decoded) = <LatestRoundCall as ::ethers::core::abi::AbiDecode>::decode(
+                data,
+            ) {
                 return Ok(Self::LatestRound(decoded));
             }
-            if let Ok(decoded)
-                = <LatestTimestampCall as ::ethers::core::abi::AbiDecode>::decode(data) {
+            if let Ok(decoded) = <LatestTimestampCall as ::ethers::core::abi::AbiDecode>::decode(
+                data,
+            ) {
                 return Ok(Self::LatestTimestamp(decoded));
             }
             Err(::ethers::core::abi::Error::InvalidData.into())
@@ -574,6 +611,8 @@ pub mod aggregator_interface {
         Clone,
         ::ethers::contract::EthAbiType,
         ::ethers::contract::EthAbiCodec,
+        serde::Serialize,
+        serde::Deserialize,
         Default,
         Debug,
         PartialEq,
@@ -586,6 +625,8 @@ pub mod aggregator_interface {
         Clone,
         ::ethers::contract::EthAbiType,
         ::ethers::contract::EthAbiCodec,
+        serde::Serialize,
+        serde::Deserialize,
         Default,
         Debug,
         PartialEq,
@@ -598,6 +639,8 @@ pub mod aggregator_interface {
         Clone,
         ::ethers::contract::EthAbiType,
         ::ethers::contract::EthAbiCodec,
+        serde::Serialize,
+        serde::Deserialize,
         Default,
         Debug,
         PartialEq,
@@ -610,6 +653,8 @@ pub mod aggregator_interface {
         Clone,
         ::ethers::contract::EthAbiType,
         ::ethers::contract::EthAbiCodec,
+        serde::Serialize,
+        serde::Deserialize,
         Default,
         Debug,
         PartialEq,
@@ -622,6 +667,8 @@ pub mod aggregator_interface {
         Clone,
         ::ethers::contract::EthAbiType,
         ::ethers::contract::EthAbiCodec,
+        serde::Serialize,
+        serde::Deserialize,
         Default,
         Debug,
         PartialEq,

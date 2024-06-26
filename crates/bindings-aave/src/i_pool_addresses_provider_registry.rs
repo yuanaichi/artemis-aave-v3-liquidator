@@ -351,6 +351,8 @@ pub mod i_pool_addresses_provider_registry {
         Clone,
         ::ethers::contract::EthEvent,
         ::ethers::contract::EthDisplay,
+        serde::Serialize,
+        serde::Deserialize,
         Default,
         Debug,
         PartialEq,
@@ -371,6 +373,8 @@ pub mod i_pool_addresses_provider_registry {
         Clone,
         ::ethers::contract::EthEvent,
         ::ethers::contract::EthDisplay,
+        serde::Serialize,
+        serde::Deserialize,
         Default,
         Debug,
         PartialEq,
@@ -388,7 +392,16 @@ pub mod i_pool_addresses_provider_registry {
         pub id: ::ethers::core::types::U256,
     }
     ///Container type for all of the contract's events
-    #[derive(Clone, ::ethers::contract::EthAbiType, Debug, PartialEq, Eq, Hash)]
+    #[derive(
+        Clone,
+        ::ethers::contract::EthAbiType,
+        serde::Serialize,
+        serde::Deserialize,
+        Debug,
+        PartialEq,
+        Eq,
+        Hash
+    )]
     pub enum IPoolAddressesProviderRegistryEvents {
         AddressesProviderRegisteredFilter(AddressesProviderRegisteredFilter),
         AddressesProviderUnregisteredFilter(AddressesProviderUnregisteredFilter),
@@ -443,6 +456,8 @@ pub mod i_pool_addresses_provider_registry {
         Clone,
         ::ethers::contract::EthCall,
         ::ethers::contract::EthDisplay,
+        serde::Serialize,
+        serde::Deserialize,
         Default,
         Debug,
         PartialEq,
@@ -461,6 +476,8 @@ pub mod i_pool_addresses_provider_registry {
         Clone,
         ::ethers::contract::EthCall,
         ::ethers::contract::EthDisplay,
+        serde::Serialize,
+        serde::Deserialize,
         Default,
         Debug,
         PartialEq,
@@ -479,6 +496,8 @@ pub mod i_pool_addresses_provider_registry {
         Clone,
         ::ethers::contract::EthCall,
         ::ethers::contract::EthDisplay,
+        serde::Serialize,
+        serde::Deserialize,
         Default,
         Debug,
         PartialEq,
@@ -492,6 +511,8 @@ pub mod i_pool_addresses_provider_registry {
         Clone,
         ::ethers::contract::EthCall,
         ::ethers::contract::EthDisplay,
+        serde::Serialize,
+        serde::Deserialize,
         Default,
         Debug,
         PartialEq,
@@ -511,6 +532,8 @@ pub mod i_pool_addresses_provider_registry {
         Clone,
         ::ethers::contract::EthCall,
         ::ethers::contract::EthDisplay,
+        serde::Serialize,
+        serde::Deserialize,
         Default,
         Debug,
         PartialEq,
@@ -525,7 +548,16 @@ pub mod i_pool_addresses_provider_registry {
         pub provider: ::ethers::core::types::Address,
     }
     ///Container type for all of the contract's call
-    #[derive(Clone, ::ethers::contract::EthAbiType, Debug, PartialEq, Eq, Hash)]
+    #[derive(
+        Clone,
+        ::ethers::contract::EthAbiType,
+        serde::Serialize,
+        serde::Deserialize,
+        Debug,
+        PartialEq,
+        Eq,
+        Hash
+    )]
     pub enum IPoolAddressesProviderRegistryCalls {
         GetAddressesProviderAddressById(GetAddressesProviderAddressByIdCall),
         GetAddressesProviderIdByAddress(GetAddressesProviderIdByAddressCall),
@@ -538,34 +570,29 @@ pub mod i_pool_addresses_provider_registry {
             data: impl AsRef<[u8]>,
         ) -> ::core::result::Result<Self, ::ethers::core::abi::AbiError> {
             let data = data.as_ref();
-            if let Ok(decoded)
-                = <GetAddressesProviderAddressByIdCall as ::ethers::core::abi::AbiDecode>::decode(
-                    data,
-                ) {
+            if let Ok(decoded) = <GetAddressesProviderAddressByIdCall as ::ethers::core::abi::AbiDecode>::decode(
+                data,
+            ) {
                 return Ok(Self::GetAddressesProviderAddressById(decoded));
             }
-            if let Ok(decoded)
-                = <GetAddressesProviderIdByAddressCall as ::ethers::core::abi::AbiDecode>::decode(
-                    data,
-                ) {
+            if let Ok(decoded) = <GetAddressesProviderIdByAddressCall as ::ethers::core::abi::AbiDecode>::decode(
+                data,
+            ) {
                 return Ok(Self::GetAddressesProviderIdByAddress(decoded));
             }
-            if let Ok(decoded)
-                = <GetAddressesProvidersListCall as ::ethers::core::abi::AbiDecode>::decode(
-                    data,
-                ) {
+            if let Ok(decoded) = <GetAddressesProvidersListCall as ::ethers::core::abi::AbiDecode>::decode(
+                data,
+            ) {
                 return Ok(Self::GetAddressesProvidersList(decoded));
             }
-            if let Ok(decoded)
-                = <RegisterAddressesProviderCall as ::ethers::core::abi::AbiDecode>::decode(
-                    data,
-                ) {
+            if let Ok(decoded) = <RegisterAddressesProviderCall as ::ethers::core::abi::AbiDecode>::decode(
+                data,
+            ) {
                 return Ok(Self::RegisterAddressesProvider(decoded));
             }
-            if let Ok(decoded)
-                = <UnregisterAddressesProviderCall as ::ethers::core::abi::AbiDecode>::decode(
-                    data,
-                ) {
+            if let Ok(decoded) = <UnregisterAddressesProviderCall as ::ethers::core::abi::AbiDecode>::decode(
+                data,
+            ) {
                 return Ok(Self::UnregisterAddressesProvider(decoded));
             }
             Err(::ethers::core::abi::Error::InvalidData.into())
@@ -648,6 +675,8 @@ pub mod i_pool_addresses_provider_registry {
         Clone,
         ::ethers::contract::EthAbiType,
         ::ethers::contract::EthAbiCodec,
+        serde::Serialize,
+        serde::Deserialize,
         Default,
         Debug,
         PartialEq,
@@ -660,6 +689,8 @@ pub mod i_pool_addresses_provider_registry {
         Clone,
         ::ethers::contract::EthAbiType,
         ::ethers::contract::EthAbiCodec,
+        serde::Serialize,
+        serde::Deserialize,
         Default,
         Debug,
         PartialEq,
@@ -672,6 +703,8 @@ pub mod i_pool_addresses_provider_registry {
         Clone,
         ::ethers::contract::EthAbiType,
         ::ethers::contract::EthAbiCodec,
+        serde::Serialize,
+        serde::Deserialize,
         Default,
         Debug,
         PartialEq,

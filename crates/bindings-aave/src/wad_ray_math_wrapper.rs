@@ -534,6 +534,8 @@ pub mod wad_ray_math_wrapper {
         Clone,
         ::ethers::contract::EthCall,
         ::ethers::contract::EthDisplay,
+        serde::Serialize,
+        serde::Deserialize,
         Default,
         Debug,
         PartialEq,
@@ -547,6 +549,8 @@ pub mod wad_ray_math_wrapper {
         Clone,
         ::ethers::contract::EthCall,
         ::ethers::contract::EthDisplay,
+        serde::Serialize,
+        serde::Deserialize,
         Default,
         Debug,
         PartialEq,
@@ -560,6 +564,8 @@ pub mod wad_ray_math_wrapper {
         Clone,
         ::ethers::contract::EthCall,
         ::ethers::contract::EthDisplay,
+        serde::Serialize,
+        serde::Deserialize,
         Default,
         Debug,
         PartialEq,
@@ -573,6 +579,8 @@ pub mod wad_ray_math_wrapper {
         Clone,
         ::ethers::contract::EthCall,
         ::ethers::contract::EthDisplay,
+        serde::Serialize,
+        serde::Deserialize,
         Default,
         Debug,
         PartialEq,
@@ -589,6 +597,8 @@ pub mod wad_ray_math_wrapper {
         Clone,
         ::ethers::contract::EthCall,
         ::ethers::contract::EthDisplay,
+        serde::Serialize,
+        serde::Deserialize,
         Default,
         Debug,
         PartialEq,
@@ -605,6 +615,8 @@ pub mod wad_ray_math_wrapper {
         Clone,
         ::ethers::contract::EthCall,
         ::ethers::contract::EthDisplay,
+        serde::Serialize,
+        serde::Deserialize,
         Default,
         Debug,
         PartialEq,
@@ -620,6 +632,8 @@ pub mod wad_ray_math_wrapper {
         Clone,
         ::ethers::contract::EthCall,
         ::ethers::contract::EthDisplay,
+        serde::Serialize,
+        serde::Deserialize,
         Default,
         Debug,
         PartialEq,
@@ -633,6 +647,8 @@ pub mod wad_ray_math_wrapper {
         Clone,
         ::ethers::contract::EthCall,
         ::ethers::contract::EthDisplay,
+        serde::Serialize,
+        serde::Deserialize,
         Default,
         Debug,
         PartialEq,
@@ -649,6 +665,8 @@ pub mod wad_ray_math_wrapper {
         Clone,
         ::ethers::contract::EthCall,
         ::ethers::contract::EthDisplay,
+        serde::Serialize,
+        serde::Deserialize,
         Default,
         Debug,
         PartialEq,
@@ -665,6 +683,8 @@ pub mod wad_ray_math_wrapper {
         Clone,
         ::ethers::contract::EthCall,
         ::ethers::contract::EthDisplay,
+        serde::Serialize,
+        serde::Deserialize,
         Default,
         Debug,
         PartialEq,
@@ -676,7 +696,16 @@ pub mod wad_ray_math_wrapper {
         pub a: ::ethers::core::types::U256,
     }
     ///Container type for all of the contract's call
-    #[derive(Clone, ::ethers::contract::EthAbiType, Debug, PartialEq, Eq, Hash)]
+    #[derive(
+        Clone,
+        ::ethers::contract::EthAbiType,
+        serde::Serialize,
+        serde::Deserialize,
+        Debug,
+        PartialEq,
+        Eq,
+        Hash
+    )]
     pub enum WadRayMathWrapperCalls {
         HalfRay(HalfRayCall),
         HalfWad(HalfWadCall),
@@ -694,44 +723,54 @@ pub mod wad_ray_math_wrapper {
             data: impl AsRef<[u8]>,
         ) -> ::core::result::Result<Self, ::ethers::core::abi::AbiError> {
             let data = data.as_ref();
-            if let Ok(decoded)
-                = <HalfRayCall as ::ethers::core::abi::AbiDecode>::decode(data) {
+            if let Ok(decoded) = <HalfRayCall as ::ethers::core::abi::AbiDecode>::decode(
+                data,
+            ) {
                 return Ok(Self::HalfRay(decoded));
             }
-            if let Ok(decoded)
-                = <HalfWadCall as ::ethers::core::abi::AbiDecode>::decode(data) {
+            if let Ok(decoded) = <HalfWadCall as ::ethers::core::abi::AbiDecode>::decode(
+                data,
+            ) {
                 return Ok(Self::HalfWad(decoded));
             }
-            if let Ok(decoded)
-                = <RayCall as ::ethers::core::abi::AbiDecode>::decode(data) {
+            if let Ok(decoded) = <RayCall as ::ethers::core::abi::AbiDecode>::decode(
+                data,
+            ) {
                 return Ok(Self::Ray(decoded));
             }
-            if let Ok(decoded)
-                = <RayDivCall as ::ethers::core::abi::AbiDecode>::decode(data) {
+            if let Ok(decoded) = <RayDivCall as ::ethers::core::abi::AbiDecode>::decode(
+                data,
+            ) {
                 return Ok(Self::RayDiv(decoded));
             }
-            if let Ok(decoded)
-                = <RayMulCall as ::ethers::core::abi::AbiDecode>::decode(data) {
+            if let Ok(decoded) = <RayMulCall as ::ethers::core::abi::AbiDecode>::decode(
+                data,
+            ) {
                 return Ok(Self::RayMul(decoded));
             }
-            if let Ok(decoded)
-                = <RayToWadCall as ::ethers::core::abi::AbiDecode>::decode(data) {
+            if let Ok(decoded) = <RayToWadCall as ::ethers::core::abi::AbiDecode>::decode(
+                data,
+            ) {
                 return Ok(Self::RayToWad(decoded));
             }
-            if let Ok(decoded)
-                = <WadCall as ::ethers::core::abi::AbiDecode>::decode(data) {
+            if let Ok(decoded) = <WadCall as ::ethers::core::abi::AbiDecode>::decode(
+                data,
+            ) {
                 return Ok(Self::Wad(decoded));
             }
-            if let Ok(decoded)
-                = <WadDivCall as ::ethers::core::abi::AbiDecode>::decode(data) {
+            if let Ok(decoded) = <WadDivCall as ::ethers::core::abi::AbiDecode>::decode(
+                data,
+            ) {
                 return Ok(Self::WadDiv(decoded));
             }
-            if let Ok(decoded)
-                = <WadMulCall as ::ethers::core::abi::AbiDecode>::decode(data) {
+            if let Ok(decoded) = <WadMulCall as ::ethers::core::abi::AbiDecode>::decode(
+                data,
+            ) {
                 return Ok(Self::WadMul(decoded));
             }
-            if let Ok(decoded)
-                = <WadToRayCall as ::ethers::core::abi::AbiDecode>::decode(data) {
+            if let Ok(decoded) = <WadToRayCall as ::ethers::core::abi::AbiDecode>::decode(
+                data,
+            ) {
                 return Ok(Self::WadToRay(decoded));
             }
             Err(::ethers::core::abi::Error::InvalidData.into())
@@ -828,6 +867,8 @@ pub mod wad_ray_math_wrapper {
         Clone,
         ::ethers::contract::EthAbiType,
         ::ethers::contract::EthAbiCodec,
+        serde::Serialize,
+        serde::Deserialize,
         Default,
         Debug,
         PartialEq,
@@ -840,6 +881,8 @@ pub mod wad_ray_math_wrapper {
         Clone,
         ::ethers::contract::EthAbiType,
         ::ethers::contract::EthAbiCodec,
+        serde::Serialize,
+        serde::Deserialize,
         Default,
         Debug,
         PartialEq,
@@ -852,6 +895,8 @@ pub mod wad_ray_math_wrapper {
         Clone,
         ::ethers::contract::EthAbiType,
         ::ethers::contract::EthAbiCodec,
+        serde::Serialize,
+        serde::Deserialize,
         Default,
         Debug,
         PartialEq,
@@ -864,6 +909,8 @@ pub mod wad_ray_math_wrapper {
         Clone,
         ::ethers::contract::EthAbiType,
         ::ethers::contract::EthAbiCodec,
+        serde::Serialize,
+        serde::Deserialize,
         Default,
         Debug,
         PartialEq,
@@ -876,6 +923,8 @@ pub mod wad_ray_math_wrapper {
         Clone,
         ::ethers::contract::EthAbiType,
         ::ethers::contract::EthAbiCodec,
+        serde::Serialize,
+        serde::Deserialize,
         Default,
         Debug,
         PartialEq,
@@ -888,6 +937,8 @@ pub mod wad_ray_math_wrapper {
         Clone,
         ::ethers::contract::EthAbiType,
         ::ethers::contract::EthAbiCodec,
+        serde::Serialize,
+        serde::Deserialize,
         Default,
         Debug,
         PartialEq,
@@ -900,6 +951,8 @@ pub mod wad_ray_math_wrapper {
         Clone,
         ::ethers::contract::EthAbiType,
         ::ethers::contract::EthAbiCodec,
+        serde::Serialize,
+        serde::Deserialize,
         Default,
         Debug,
         PartialEq,
@@ -912,6 +965,8 @@ pub mod wad_ray_math_wrapper {
         Clone,
         ::ethers::contract::EthAbiType,
         ::ethers::contract::EthAbiCodec,
+        serde::Serialize,
+        serde::Deserialize,
         Default,
         Debug,
         PartialEq,
@@ -924,6 +979,8 @@ pub mod wad_ray_math_wrapper {
         Clone,
         ::ethers::contract::EthAbiType,
         ::ethers::contract::EthAbiCodec,
+        serde::Serialize,
+        serde::Deserialize,
         Default,
         Debug,
         PartialEq,
@@ -936,6 +993,8 @@ pub mod wad_ray_math_wrapper {
         Clone,
         ::ethers::contract::EthAbiType,
         ::ethers::contract::EthAbiCodec,
+        serde::Serialize,
+        serde::Deserialize,
         Default,
         Debug,
         PartialEq,

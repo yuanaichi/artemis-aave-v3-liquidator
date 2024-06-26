@@ -518,6 +518,8 @@ pub mod mock_flash_loan_simple_receiver {
         Clone,
         ::ethers::contract::EthEvent,
         ::ethers::contract::EthDisplay,
+        serde::Serialize,
+        serde::Deserialize,
         Default,
         Debug,
         PartialEq,
@@ -537,6 +539,8 @@ pub mod mock_flash_loan_simple_receiver {
         Clone,
         ::ethers::contract::EthEvent,
         ::ethers::contract::EthDisplay,
+        serde::Serialize,
+        serde::Deserialize,
         Default,
         Debug,
         PartialEq,
@@ -553,7 +557,16 @@ pub mod mock_flash_loan_simple_receiver {
         pub premium: ::ethers::core::types::U256,
     }
     ///Container type for all of the contract's events
-    #[derive(Clone, ::ethers::contract::EthAbiType, Debug, PartialEq, Eq, Hash)]
+    #[derive(
+        Clone,
+        ::ethers::contract::EthAbiType,
+        serde::Serialize,
+        serde::Deserialize,
+        Debug,
+        PartialEq,
+        Eq,
+        Hash
+    )]
     pub enum MockFlashLoanSimpleReceiverEvents {
         ExecutedWithFailFilter(ExecutedWithFailFilter),
         ExecutedWithSuccessFilter(ExecutedWithSuccessFilter),
@@ -604,6 +617,8 @@ pub mod mock_flash_loan_simple_receiver {
         Clone,
         ::ethers::contract::EthCall,
         ::ethers::contract::EthDisplay,
+        serde::Serialize,
+        serde::Deserialize,
         Default,
         Debug,
         PartialEq,
@@ -617,6 +632,8 @@ pub mod mock_flash_loan_simple_receiver {
         Clone,
         ::ethers::contract::EthCall,
         ::ethers::contract::EthDisplay,
+        serde::Serialize,
+        serde::Deserialize,
         Default,
         Debug,
         PartialEq,
@@ -630,6 +647,8 @@ pub mod mock_flash_loan_simple_receiver {
         Clone,
         ::ethers::contract::EthCall,
         ::ethers::contract::EthDisplay,
+        serde::Serialize,
+        serde::Deserialize,
         Default,
         Debug,
         PartialEq,
@@ -652,6 +671,8 @@ pub mod mock_flash_loan_simple_receiver {
         Clone,
         ::ethers::contract::EthCall,
         ::ethers::contract::EthDisplay,
+        serde::Serialize,
+        serde::Deserialize,
         Default,
         Debug,
         PartialEq,
@@ -665,6 +686,8 @@ pub mod mock_flash_loan_simple_receiver {
         Clone,
         ::ethers::contract::EthCall,
         ::ethers::contract::EthDisplay,
+        serde::Serialize,
+        serde::Deserialize,
         Default,
         Debug,
         PartialEq,
@@ -680,6 +703,8 @@ pub mod mock_flash_loan_simple_receiver {
         Clone,
         ::ethers::contract::EthCall,
         ::ethers::contract::EthDisplay,
+        serde::Serialize,
+        serde::Deserialize,
         Default,
         Debug,
         PartialEq,
@@ -695,6 +720,8 @@ pub mod mock_flash_loan_simple_receiver {
         Clone,
         ::ethers::contract::EthCall,
         ::ethers::contract::EthDisplay,
+        serde::Serialize,
+        serde::Deserialize,
         Default,
         Debug,
         PartialEq,
@@ -710,6 +737,8 @@ pub mod mock_flash_loan_simple_receiver {
         Clone,
         ::ethers::contract::EthCall,
         ::ethers::contract::EthDisplay,
+        serde::Serialize,
+        serde::Deserialize,
         Default,
         Debug,
         PartialEq,
@@ -719,7 +748,16 @@ pub mod mock_flash_loan_simple_receiver {
     #[ethcall(name = "simulateEOA", abi = "simulateEOA()")]
     pub struct SimulateEOACall;
     ///Container type for all of the contract's call
-    #[derive(Clone, ::ethers::contract::EthAbiType, Debug, PartialEq, Eq, Hash)]
+    #[derive(
+        Clone,
+        ::ethers::contract::EthAbiType,
+        serde::Serialize,
+        serde::Deserialize,
+        Debug,
+        PartialEq,
+        Eq,
+        Hash
+    )]
     pub enum MockFlashLoanSimpleReceiverCalls {
         AddressesProvider(AddressesProviderCall),
         Pool(PoolCall),
@@ -735,46 +773,44 @@ pub mod mock_flash_loan_simple_receiver {
             data: impl AsRef<[u8]>,
         ) -> ::core::result::Result<Self, ::ethers::core::abi::AbiError> {
             let data = data.as_ref();
-            if let Ok(decoded)
-                = <AddressesProviderCall as ::ethers::core::abi::AbiDecode>::decode(
-                    data,
-                ) {
+            if let Ok(decoded) = <AddressesProviderCall as ::ethers::core::abi::AbiDecode>::decode(
+                data,
+            ) {
                 return Ok(Self::AddressesProvider(decoded));
             }
-            if let Ok(decoded)
-                = <PoolCall as ::ethers::core::abi::AbiDecode>::decode(data) {
+            if let Ok(decoded) = <PoolCall as ::ethers::core::abi::AbiDecode>::decode(
+                data,
+            ) {
                 return Ok(Self::Pool(decoded));
             }
-            if let Ok(decoded)
-                = <ExecuteOperationCall as ::ethers::core::abi::AbiDecode>::decode(
-                    data,
-                ) {
+            if let Ok(decoded) = <ExecuteOperationCall as ::ethers::core::abi::AbiDecode>::decode(
+                data,
+            ) {
                 return Ok(Self::ExecuteOperation(decoded));
             }
-            if let Ok(decoded)
-                = <GetAmountToApproveCall as ::ethers::core::abi::AbiDecode>::decode(
-                    data,
-                ) {
+            if let Ok(decoded) = <GetAmountToApproveCall as ::ethers::core::abi::AbiDecode>::decode(
+                data,
+            ) {
                 return Ok(Self::GetAmountToApprove(decoded));
             }
-            if let Ok(decoded)
-                = <SetAmountToApproveCall as ::ethers::core::abi::AbiDecode>::decode(
-                    data,
-                ) {
+            if let Ok(decoded) = <SetAmountToApproveCall as ::ethers::core::abi::AbiDecode>::decode(
+                data,
+            ) {
                 return Ok(Self::SetAmountToApprove(decoded));
             }
-            if let Ok(decoded)
-                = <SetFailExecutionTransferCall as ::ethers::core::abi::AbiDecode>::decode(
-                    data,
-                ) {
+            if let Ok(decoded) = <SetFailExecutionTransferCall as ::ethers::core::abi::AbiDecode>::decode(
+                data,
+            ) {
                 return Ok(Self::SetFailExecutionTransfer(decoded));
             }
-            if let Ok(decoded)
-                = <SetSimulateEOACall as ::ethers::core::abi::AbiDecode>::decode(data) {
+            if let Ok(decoded) = <SetSimulateEOACall as ::ethers::core::abi::AbiDecode>::decode(
+                data,
+            ) {
                 return Ok(Self::SetSimulateEOA(decoded));
             }
-            if let Ok(decoded)
-                = <SimulateEOACall as ::ethers::core::abi::AbiDecode>::decode(data) {
+            if let Ok(decoded) = <SimulateEOACall as ::ethers::core::abi::AbiDecode>::decode(
+                data,
+            ) {
                 return Ok(Self::SimulateEOA(decoded));
             }
             Err(::ethers::core::abi::Error::InvalidData.into())
@@ -878,6 +914,8 @@ pub mod mock_flash_loan_simple_receiver {
         Clone,
         ::ethers::contract::EthAbiType,
         ::ethers::contract::EthAbiCodec,
+        serde::Serialize,
+        serde::Deserialize,
         Default,
         Debug,
         PartialEq,
@@ -890,6 +928,8 @@ pub mod mock_flash_loan_simple_receiver {
         Clone,
         ::ethers::contract::EthAbiType,
         ::ethers::contract::EthAbiCodec,
+        serde::Serialize,
+        serde::Deserialize,
         Default,
         Debug,
         PartialEq,
@@ -902,6 +942,8 @@ pub mod mock_flash_loan_simple_receiver {
         Clone,
         ::ethers::contract::EthAbiType,
         ::ethers::contract::EthAbiCodec,
+        serde::Serialize,
+        serde::Deserialize,
         Default,
         Debug,
         PartialEq,
@@ -914,6 +956,8 @@ pub mod mock_flash_loan_simple_receiver {
         Clone,
         ::ethers::contract::EthAbiType,
         ::ethers::contract::EthAbiCodec,
+        serde::Serialize,
+        serde::Deserialize,
         Default,
         Debug,
         PartialEq,
@@ -926,6 +970,8 @@ pub mod mock_flash_loan_simple_receiver {
         Clone,
         ::ethers::contract::EthAbiType,
         ::ethers::contract::EthAbiCodec,
+        serde::Serialize,
+        serde::Deserialize,
         Default,
         Debug,
         PartialEq,

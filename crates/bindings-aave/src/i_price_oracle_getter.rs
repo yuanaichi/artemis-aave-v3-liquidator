@@ -177,6 +177,8 @@ pub mod i_price_oracle_getter {
         Clone,
         ::ethers::contract::EthCall,
         ::ethers::contract::EthDisplay,
+        serde::Serialize,
+        serde::Deserialize,
         Default,
         Debug,
         PartialEq,
@@ -190,6 +192,8 @@ pub mod i_price_oracle_getter {
         Clone,
         ::ethers::contract::EthCall,
         ::ethers::contract::EthDisplay,
+        serde::Serialize,
+        serde::Deserialize,
         Default,
         Debug,
         PartialEq,
@@ -203,6 +207,8 @@ pub mod i_price_oracle_getter {
         Clone,
         ::ethers::contract::EthCall,
         ::ethers::contract::EthDisplay,
+        serde::Serialize,
+        serde::Deserialize,
         Default,
         Debug,
         PartialEq,
@@ -214,7 +220,16 @@ pub mod i_price_oracle_getter {
         pub asset: ::ethers::core::types::Address,
     }
     ///Container type for all of the contract's call
-    #[derive(Clone, ::ethers::contract::EthAbiType, Debug, PartialEq, Eq, Hash)]
+    #[derive(
+        Clone,
+        ::ethers::contract::EthAbiType,
+        serde::Serialize,
+        serde::Deserialize,
+        Debug,
+        PartialEq,
+        Eq,
+        Hash
+    )]
     pub enum IPriceOracleGetterCalls {
         BaseCurrency(BaseCurrencyCall),
         BaseCurrencyUnit(BaseCurrencyUnitCall),
@@ -225,18 +240,19 @@ pub mod i_price_oracle_getter {
             data: impl AsRef<[u8]>,
         ) -> ::core::result::Result<Self, ::ethers::core::abi::AbiError> {
             let data = data.as_ref();
-            if let Ok(decoded)
-                = <BaseCurrencyCall as ::ethers::core::abi::AbiDecode>::decode(data) {
+            if let Ok(decoded) = <BaseCurrencyCall as ::ethers::core::abi::AbiDecode>::decode(
+                data,
+            ) {
                 return Ok(Self::BaseCurrency(decoded));
             }
-            if let Ok(decoded)
-                = <BaseCurrencyUnitCall as ::ethers::core::abi::AbiDecode>::decode(
-                    data,
-                ) {
+            if let Ok(decoded) = <BaseCurrencyUnitCall as ::ethers::core::abi::AbiDecode>::decode(
+                data,
+            ) {
                 return Ok(Self::BaseCurrencyUnit(decoded));
             }
-            if let Ok(decoded)
-                = <GetAssetPriceCall as ::ethers::core::abi::AbiDecode>::decode(data) {
+            if let Ok(decoded) = <GetAssetPriceCall as ::ethers::core::abi::AbiDecode>::decode(
+                data,
+            ) {
                 return Ok(Self::GetAssetPrice(decoded));
             }
             Err(::ethers::core::abi::Error::InvalidData.into())
@@ -286,6 +302,8 @@ pub mod i_price_oracle_getter {
         Clone,
         ::ethers::contract::EthAbiType,
         ::ethers::contract::EthAbiCodec,
+        serde::Serialize,
+        serde::Deserialize,
         Default,
         Debug,
         PartialEq,
@@ -298,6 +316,8 @@ pub mod i_price_oracle_getter {
         Clone,
         ::ethers::contract::EthAbiType,
         ::ethers::contract::EthAbiCodec,
+        serde::Serialize,
+        serde::Deserialize,
         Default,
         Debug,
         PartialEq,
@@ -310,6 +330,8 @@ pub mod i_price_oracle_getter {
         Clone,
         ::ethers::contract::EthAbiType,
         ::ethers::contract::EthAbiCodec,
+        serde::Serialize,
+        serde::Deserialize,
         Default,
         Debug,
         PartialEq,
