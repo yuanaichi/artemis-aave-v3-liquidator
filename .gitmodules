@@ -22,3 +22,6 @@
 [submodule "crates/liquidator-contract/lib/solmate"]
 	path = crates/liquidator-contract/lib/solmate
 	url = https://github.com/transmissions11/solmate
+[submodule "crates/aave-v3-core"]
+	path = crates/aave-v3-core
+	url = https://github.com/aave/aave-v3-core

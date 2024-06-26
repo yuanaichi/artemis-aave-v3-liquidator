@@ -89,7 +89,7 @@ async fn main() -> Result<()> {
 
     let block_collector = Box::new(BlockCollector::new(ws_provider.clone()));
     let block_collector = CollectorMap::new(block_collector, Event::NewBlock);
-    engine.add_collector(Box::new(block_collector));
+    //engine.add_collector(Box::new(block_collector));
     
     // Set up time collector.
     let time_collector = Box::new(TimeCollector::new(POLL_INTERVAL_SECS));
