@@ -746,8 +746,12 @@ impl<M: Middleware + 'static> AaveStrategy<M> {
             .call()
             .await?;
 
-        
+        info!("data0: {:?}, data1: {:?}", data0, data1);
+
         let paraswap_data = self.get_paraswap_data(op).await?;
+
+        info!("psp: {:?}", paraswap_data);
+
         Ok(liquidator.liquidate(
             op.collateral, 
             op.debt, 
